@@ -60,10 +60,14 @@ matrix_to_cells <- function(j, x, j_arg, call = caller_env()) {
     abort_subset_matrix_must_have_same_dimensions(j_arg, call)
   }
 
-  # Need unlist(list(...)) because apply() isn't type stable if the return has the same length everywhere
-  # FIXME: Faster with a C implementation?
-  cells <- unlist(apply(j, 2, function(x) list(which(x))), recursive = FALSE)
-  cells
+  # One integer vector of 1-based row positions per column,
+  # in column-major order (column by column, rows in original order),
+  # with NA cells skipped. The C implementation allocates only
+  # in proportion to the number of columns and hits,
+  # never a copy of or an index over the whole mask
+  # (unlike apply(j, 2, ...), which copies the mask via aperm(),
+  # or which(j), which allocates a full-length index).
+  .Call(`tibble_matrix_to_cells`, j)
 }
 
 cells_to_col_idx <- function(cells) {

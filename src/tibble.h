@@ -5,6 +5,7 @@
 #include <Rinternals.h>
 
 SEXP tibble_matrixToDataFrame(SEXP xSEXP);
+SEXP tibble_matrix_to_cells(SEXP j);
 SEXP tibble_string_to_indices(SEXP x);
 SEXP tibble_need_coerce(SEXP x);
 SEXP tibble_update_attrs(SEXP x, SEXP dots);
